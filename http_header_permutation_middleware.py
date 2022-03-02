@@ -1,23 +1,35 @@
+import math
+
+
+
 def http_header_permutation_middleware(get_response):
 
-    headers_order = [
-        "Cross-Origin-Opener-Policy", 
-        # "Date", 
-        "Referrer-Policy", 
-        # "Server", 
-        "X-Content-Type-Options", 
-        "X-Frame-Options",
-        "Content-Length", 
-        "Content-Type", 
-    ]
+    # covert message should be a single int
+    full_covert_message = int.from_bytes(b'Say No To War!', "little")
 
     def middleware_function(request):
         response = get_response(request)
 
-        old_headers = response.headers
-        response.headers = dict()
-        for header_name in headers_order:
-            response.headers[header_name] = old_headers[header_name]
+        covert_message_left = request.session.get('covert_message_left', full_covert_message)
+        if covert_message_left == 0:
+            covert_message_left = full_covert_message
+        max_number = math.factorial(len(request.headers))
+        number_to_send = covert_message_left % max_number
+
+        sorted_headers_keys = sorted(response.headers.keys(), key = lambda x: x.lower())
+        new_headers = {}
+        while True:
+            headers_left = len(sorted_headers_keys)
+            if headers_left == 0:
+                break
+            header_index = number_to_send % headers_left
+            number_to_send = number_to_send // headers_left
+            header_key = sorted_headers_keys.pop(header_index)
+            new_headers[header_key] = response.headers[header_key]
+            headers_left = len(sorted_headers_keys)
+
+        response.headers = new_headers
+        request.session['covert_message_left'] = covert_message_left // max_number
 
         return response
 
