@@ -13,10 +13,11 @@ def http_header_permutation_middleware(get_response):
         covert_message_left = request.session.get('covert_message_left', full_covert_message)
         if covert_message_left == 0:
             covert_message_left = full_covert_message
-        max_number = math.factorial(len(request.headers))
-        number_to_send = covert_message_left % max_number
 
         sorted_headers_keys = sorted(response.headers.keys(), key = lambda x: x.lower())
+        max_number = math.factorial(len(sorted_headers_keys))
+        number_to_send = covert_message_left % max_number
+
         new_headers = {}
         while True:
             headers_left = len(sorted_headers_keys)
