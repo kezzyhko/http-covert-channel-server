@@ -19,5 +19,6 @@ import views
 
 urlpatterns = [
     path('', views.index),
+    path('images/<str:imagename>.jpg', views.image),
     # path('admin/', admin.site.urls),
 ]

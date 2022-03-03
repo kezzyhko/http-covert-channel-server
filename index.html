@@ -1,1 +1,3 @@
-{{ images|random }}
+{% for image in images %}
+<img src='./images/{{image}}' />
+{% endfor %}
