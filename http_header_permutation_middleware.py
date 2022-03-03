@@ -15,8 +15,10 @@ def http_header_permutation_middleware(get_response):
             covert_message_left = full_covert_message
 
         sorted_headers_keys = sorted(response.headers.keys(), key = lambda x: x.lower())
-        max_number = math.factorial(len(sorted_headers_keys))
-        number_to_send = covert_message_left % max_number
+        hidden_bits_amount = math.floor(math.log2(math.factorial(len(sorted_headers_keys))))
+
+        number_to_send = covert_message_left & ((1 << hidden_bits_amount) - 1)
+        request.session['covert_message_left'] = covert_message_left >> hidden_bits_amount
 
         new_headers = {}
         while True:
@@ -29,7 +31,6 @@ def http_header_permutation_middleware(get_response):
             new_headers[header_key] = response.headers[header_key]
 
         response.headers = new_headers
-        request.session['covert_message_left'] = covert_message_left // max_number
 
         return response
 
