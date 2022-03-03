@@ -31,7 +31,7 @@ def http_header_permutation_middleware(get_response):
             if headers_left == 0:
                 break
             header_index = number_to_send % headers_left
-            number_to_send = number_to_send // headers_left
+            number_to_send //= headers_left
             header_key = sorted_headers_keys.pop(header_index)
             new_headers[header_key] = response.headers[header_key]
 
