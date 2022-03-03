@@ -26,7 +26,6 @@ def http_header_permutation_middleware(get_response):
             number_to_send = number_to_send // headers_left
             header_key = sorted_headers_keys.pop(header_index)
             new_headers[header_key] = response.headers[header_key]
-            headers_left = len(sorted_headers_keys)
 
         response.headers = new_headers
         request.session['covert_message_left'] = covert_message_left // max_number
