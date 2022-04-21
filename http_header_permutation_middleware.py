@@ -12,6 +12,7 @@ def http_header_permutation_middleware(get_response):
 
     def middleware_function(request):
         response = get_response(request)
+        response.headers['Age'] = None # this header will be added later, but we have to include it in count now
         hidden_bits_amount = math.floor(math.log2(math.factorial(len(response.headers))))
 
         if not request.session.session_key:
